@@ -1,0 +1,1055 @@
+{
+ "fxc": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\fxc.exe",
+ "base_defines": [
+  "FFX_GPU=1",
+  "FFX_HLSL=1",
+  "FFX_HLSL_5_0=1",
+  "FFX_HLSL_SM=50",
+  "FFX_HALF=0",
+  "FFX_SPD_NO_WAVE_OPERATIONS"
+ ],
+ "fi_extra_defines": [
+  "FFX_FRAMEINTERPOLATION_OPTION_UPSAMPLE_SAMPLERS_USE_DATA_HALF=0",
+  "FFX_FRAMEINTERPOLATION_OPTION_ACCUMULATE_SAMPLERS_USE_DATA_HALF=0",
+  "FFX_FRAMEINTERPOLATION_OPTION_REPROJECT_SAMPLERS_USE_DATA_HALF=1",
+  "FFX_FRAMEINTERPOLATION_OPTION_POSTPROCESSLOCKSTATUS_SAMPLERS_USE_DATA_HALF=0",
+  "FFX_FRAMEINTERPOLATION_OPTION_UPSAMPLE_USE_LANCZOS_TYPE=2"
+ ],
+ "fi_options": [
+  [
+   "FFX_FRAMEINTERPOLATION_OPTION_LOW_RES_MOTION_VECTORS",
+   1
+  ],
+  [
+   "FFX_FRAMEINTERPOLATION_OPTION_JITTER_MOTION_VECTORS",
+   0
+  ],
+  [
+   "FFX_FRAMEINTERPOLATION_OPTION_INVERTED_DEPTH",
+   0
+  ]
+ ],
+ "of_options": [
+  [
+   "FFX_OPTICALFLOW_OPTION_HDR_COLOR_INPUT",
+   0
+  ]
+ ],
+ "passes": [
+  {
+   "pass": "ffx_frameinterpolation_setup_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_setup_pass_94373115ff271ed5047054dce2e9a2c5",
+   "dxbc_bytes": 3524,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 6,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow_scd",
+      0
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "rw_game_motion_vector_field_y",
+      1
+     ],
+     [
+      "rw_optical_flow_motion_vector_field_x",
+      2
+     ],
+     [
+      "rw_optical_flow_motion_vector_field_y",
+      3
+     ],
+     [
+      "rw_disocclusion_mask",
+      4
+     ]
+    ],
+    "BufferUAV": [
+     [
+      "rw_counters",
+      5
+     ]
+    ]
+   },
+   "fxc_warnings": 3
+  },
+  {
+   "pass": "ffx_frameinterpolation_reconstruct_and_dilate_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_reconstruct_and_dilate_pass_20a36a1747bb3be7f283ba67fe92a639",
+   "dxbc_bytes": 5656,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 3,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_input_motion_vectors",
+      0
+     ],
+     [
+      "r_input_depth",
+      1
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_reconstructed_depth_previous_frame",
+      0
+     ],
+     [
+      "rw_dilated_motion_vectors",
+      1
+     ],
+     [
+      "rw_dilated_depth",
+      2
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_frameinterpolation_reconstruct_previous_depth_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_reconstruct_previous_depth_pass_b1e3dde32f37877224e75b9aa8c89625",
+   "dxbc_bytes": 3496,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_dilated_motion_vectors",
+      0
+     ],
+     [
+      "r_dilated_depth",
+      1
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_reconstructed_depth_interpolated_frame",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_frameinterpolation_game_motion_vector_field_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_game_motion_vector_field_pass_c994423bac11050a9071ad22f767e428",
+   "dxbc_bytes": 8208,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 2,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_dilated_motion_vectors",
+      0
+     ],
+     [
+      "r_dilated_depth",
+      1
+     ],
+     [
+      "r_previous_interpolation_source",
+      2
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "rw_game_motion_vector_field_y",
+      1
+     ]
+    ],
+    "Sampler": [
+     [
+      "s_LinearClamp",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 5
+  },
+  {
+   "pass": "ffx_frameinterpolation_optical_flow_vector_field_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_optical_flow_vector_field_pass_b1e01bc560a61308165c5f1536533c44",
+   "dxbc_bytes": 8392,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 2,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow",
+      0
+     ],
+     [
+      "r_previous_interpolation_source",
+      3
+     ],
+     [
+      "r_current_interpolation_source",
+      4
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow_motion_vector_field_x",
+      0
+     ],
+     [
+      "rw_optical_flow_motion_vector_field_y",
+      1
+     ]
+    ],
+    "Sampler": [
+     [
+      "s_LinearClamp",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 5
+  },
+  {
+   "pass": "ffx_frameinterpolation_disocclusion_mask_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_disocclusion_mask_pass_7029bb59576dcea429c762478fdf7303",
+   "dxbc_bytes": 8880,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "r_game_motion_vector_field_y",
+      1
+     ],
+     [
+      "r_reconstructed_depth_previous_frame",
+      2
+     ],
+     [
+      "r_dilated_depth",
+      3
+     ],
+     [
+      "r_reconstructed_depth_interpolated_frame",
+      4
+     ],
+     [
+      "r_inpainting_pyramid",
+      5
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_disocclusion_mask",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 1
+  },
+  {
+   "pass": "ffx_frameinterpolation_compute_game_vector_field_inpainting_pyramid_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_compute_game_vector_field_inpainting_pyramid_pass_7a7afe9f3d2aa0b29a079e625b66d381",
+   "dxbc_bytes": 36248,
+   "requires": "0x808",
+   "min_feature_level": "0xb100",
+   "thread_group": [
+    256,
+    1,
+    1
+   ],
+   "uav_slots_used": 13,
+   "needs_fl11_1": true,
+   "typed_uav_load_flag": true,
+   "typed_uav_loads_in_asm": [
+    "rw_inpainting_pyramid5"
+   ],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ],
+     [
+      "cbInpaintingPyramid",
+      1
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "r_game_motion_vector_field_y",
+      1
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_inpainting_pyramid0",
+      1
+     ],
+     [
+      "rw_inpainting_pyramid1",
+      2
+     ],
+     [
+      "rw_inpainting_pyramid2",
+      3
+     ],
+     [
+      "rw_inpainting_pyramid3",
+      4
+     ],
+     [
+      "rw_inpainting_pyramid4",
+      5
+     ],
+     [
+      "rw_inpainting_pyramid5",
+      6
+     ],
+     [
+      "rw_inpainting_pyramid6",
+      7
+     ],
+     [
+      "rw_inpainting_pyramid7",
+      8
+     ],
+     [
+      "rw_inpainting_pyramid8",
+      9
+     ],
+     [
+      "rw_inpainting_pyramid9",
+      10
+     ],
+     [
+      "rw_inpainting_pyramid10",
+      11
+     ],
+     [
+      "rw_inpainting_pyramid11",
+      12
+     ]
+    ],
+    "BufferUAV": [
+     [
+      "rw_counters",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_frameinterpolation_compute_inpainting_pyramid_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_compute_inpainting_pyramid_pass_ca8841c9550c34e972fa5049c0f51099",
+   "dxbc_bytes": 28104,
+   "requires": "0x808",
+   "min_feature_level": "0xb100",
+   "thread_group": [
+    256,
+    1,
+    1
+   ],
+   "uav_slots_used": 13,
+   "needs_fl11_1": true,
+   "typed_uav_load_flag": true,
+   "typed_uav_loads_in_asm": [
+    "rw_inpainting_pyramid5"
+   ],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ],
+     [
+      "cbInpaintingPyramid",
+      1
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_output",
+      0
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_inpainting_pyramid0",
+      1
+     ],
+     [
+      "rw_inpainting_pyramid1",
+      2
+     ],
+     [
+      "rw_inpainting_pyramid2",
+      3
+     ],
+     [
+      "rw_inpainting_pyramid3",
+      4
+     ],
+     [
+      "rw_inpainting_pyramid4",
+      5
+     ],
+     [
+      "rw_inpainting_pyramid5",
+      6
+     ],
+     [
+      "rw_inpainting_pyramid6",
+      7
+     ],
+     [
+      "rw_inpainting_pyramid7",
+      8
+     ],
+     [
+      "rw_inpainting_pyramid8",
+      9
+     ],
+     [
+      "rw_inpainting_pyramid9",
+      10
+     ],
+     [
+      "rw_inpainting_pyramid10",
+      11
+     ],
+     [
+      "rw_inpainting_pyramid11",
+      12
+     ]
+    ],
+    "BufferUAV": [
+     [
+      "rw_counters",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_frameinterpolation_inpainting_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_inpainting_pass_d335ff72acc429bbe24814baa06f2b93",
+   "dxbc_bytes": 8408,
+   "requires": "0x800",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": true,
+   "typed_uav_loads_in_asm": [
+    "rw_output"
+   ],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow_scd",
+      0
+     ],
+     [
+      "r_inpainting_pyramid",
+      1
+     ],
+     [
+      "r_present_backbuffer",
+      2
+     ],
+     [
+      "r_current_interpolation_source",
+      3
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_output",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 5
+  },
+  {
+   "pass": "ffx_frameinterpolation_debug_view_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_debug_view_pass_6ea2547cc858762818e50af7571ab2e9",
+   "dxbc_bytes": 10908,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "r_game_motion_vector_field_y",
+      1
+     ],
+     [
+      "r_optical_flow_motion_vector_field_x",
+      2
+     ],
+     [
+      "r_optical_flow_motion_vector_field_y",
+      3
+     ],
+     [
+      "r_disocclusion_mask",
+      4
+     ],
+     [
+      "r_present_backbuffer",
+      5
+     ],
+     [
+      "r_inpainting_pyramid",
+      6
+     ],
+     [
+      "r_current_interpolation_source",
+      7
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_output",
+      0
+     ]
+    ],
+    "Sampler": [
+     [
+      "s_LinearClamp",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 1
+  },
+  {
+   "pass": "ffx_frameinterpolation_pass",
+   "effect": "FI",
+   "permutation": "ffx_frameinterpolation_pass_61aa19bdd2fbe1e4bdeefefd34cd3645",
+   "dxbc_bytes": 12640,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    8,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbFI",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_game_motion_vector_field_x",
+      0
+     ],
+     [
+      "r_game_motion_vector_field_y",
+      1
+     ],
+     [
+      "r_optical_flow_motion_vector_field_x",
+      2
+     ],
+     [
+      "r_optical_flow_motion_vector_field_y",
+      3
+     ],
+     [
+      "r_previous_interpolation_source",
+      4
+     ],
+     [
+      "r_current_interpolation_source",
+      5
+     ],
+     [
+      "r_disocclusion_mask",
+      6
+     ],
+     [
+      "r_inpainting_pyramid",
+      7
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_output",
+      0
+     ]
+    ],
+    "BufferSRV": [
+     [
+      "r_counters",
+      8
+     ]
+    ],
+    "Sampler": [
+     [
+      "s_LinearClamp",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 4
+  },
+  {
+   "pass": "ffx_opticalflow_prepare_luma_pass",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_prepare_luma_pass_04d3a37306aa2f13ac000bc86bc13e86",
+   "dxbc_bytes": 2728,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    16,
+    16,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbOF",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_input_color",
+      0
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow_input",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 5
+  },
+  {
+   "pass": "ffx_opticalflow_compute_luminance_pyramid_pass",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_compute_luminance_pyramid_pass_e5fa099de3696e76e8b027b93e563b46",
+   "dxbc_bytes": 7572,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    256,
+    1,
+    1
+   ],
+   "uav_slots_used": 7,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [
+    "rw_optical_flow_input"
+   ],
+   "classes": {
+    "TextureUAV": [
+     [
+      "rw_optical_flow_input",
+      0
+     ],
+     [
+      "rw_optical_flow_input_level_1",
+      1
+     ],
+     [
+      "rw_optical_flow_input_level_2",
+      2
+     ],
+     [
+      "rw_optical_flow_input_level_3",
+      3
+     ],
+     [
+      "rw_optical_flow_input_level_4",
+      4
+     ],
+     [
+      "rw_optical_flow_input_level_5",
+      5
+     ],
+     [
+      "rw_optical_flow_input_level_6",
+      6
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_opticalflow_generate_scd_histogram_pass",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_generate_scd_histogram_pass_05a6b26b4453c0afe0aaf9da5da802c8",
+   "dxbc_bytes": 2732,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    32,
+    8,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbOF",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow_input",
+      0
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow_scd_histogram",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 4
+  },
+  {
+   "pass": "ffx_opticalflow_compute_scd_divergence_pass",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_compute_scd_divergence_pass_625dc6008b8dcb176df070e7befc0a52",
+   "dxbc_bytes": 6424,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    256,
+    1,
+    1
+   ],
+   "uav_slots_used": 4,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [
+    "rw_optical_flow_scd_histogram",
+    "rw_optical_flow_scd_previous_histogram"
+   ],
+   "classes": {
+    "TextureUAV": [
+     [
+      "rw_optical_flow_scd_histogram",
+      0
+     ],
+     [
+      "rw_optical_flow_scd_previous_histogram",
+      1
+     ],
+     [
+      "rw_optical_flow_scd_temp",
+      2
+     ],
+     [
+      "rw_optical_flow_scd_output",
+      3
+     ]
+    ]
+   },
+   "fxc_warnings": 1
+  },
+  {
+   "pass": "ffx_opticalflow_compute_optical_flow_advanced_pass_v5",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_compute_optical_flow_advanced_pass_v5_a722333da23bcb6925e9350498298961",
+   "dxbc_bytes": 12920,
+   "requires": "0x800",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    64,
+    1,
+    1
+   ],
+   "uav_slots_used": 2,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": true,
+   "typed_uav_loads_in_asm": [
+    "rw_optical_flow"
+   ],
+   "classes": {
+    "CBV": [
+     [
+      "cbOF",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow_input",
+      0
+     ],
+     [
+      "r_optical_flow_previous_input",
+      1
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow",
+      0
+     ],
+     [
+      "rw_optical_flow_scd_output",
+      1
+     ]
+    ]
+   },
+   "fxc_warnings": 2
+  },
+  {
+   "pass": "ffx_opticalflow_filter_optical_flow_pass_v5",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_filter_optical_flow_pass_v5_7662d857fbc60d644aadabbc7088fa92",
+   "dxbc_bytes": 1488,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    16,
+    4,
+    1
+   ],
+   "uav_slots_used": 1,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "TextureSRV": [
+     [
+      "r_optical_flow_previous",
+      0
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow",
+      0
+     ]
+    ]
+   },
+   "fxc_warnings": 0
+  },
+  {
+   "pass": "ffx_opticalflow_scale_optical_flow_advanced_pass_v5",
+   "effect": "OF",
+   "permutation": "ffx_opticalflow_scale_optical_flow_advanced_pass_v5_646a0a9a53336066a873b0334e294ff9",
+   "dxbc_bytes": 5908,
+   "requires": "0x0",
+   "min_feature_level": "0xb000",
+   "thread_group": [
+    4,
+    4,
+    4
+   ],
+   "uav_slots_used": 2,
+   "needs_fl11_1": false,
+   "typed_uav_load_flag": false,
+   "typed_uav_loads_in_asm": [],
+   "classes": {
+    "CBV": [
+     [
+      "cbOF",
+      0
+     ]
+    ],
+    "TextureSRV": [
+     [
+      "r_optical_flow_input",
+      0
+     ],
+     [
+      "r_optical_flow_previous_input",
+      1
+     ],
+     [
+      "r_optical_flow",
+      2
+     ]
+    ],
+    "TextureUAV": [
+     [
+      "rw_optical_flow_next_level",
+      0
+     ],
+     [
+      "rw_optical_flow_scd_output",
+      1
+     ]
+    ]
+   },
+   "fxc_warnings": 8
+  }
+ ]
+}

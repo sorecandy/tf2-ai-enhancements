@@ -1,0 +1,413 @@
+resource/ui/menus/tf2nr_dlss5.menu
+{
+	menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		Vignette
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuVignette
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"DLSS 5 ADJUSTMENTS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname				MenuItemDescriptionClass
+			xpos					975
+			ypos					168
+		}
+
+		// ---- rows: 160 + 2*40 + 2*45 + 10*40 = 730 < footer 990 (subheader bars ypos 0) -----------------------------------
+		SwchDLSS5NR
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			xpos					120
+			ypos					160
+			tabPosition				1
+			navUp					SwchNRStabilize
+			navDown					BtnDLSS5Reset
+			ConVar					"tf2nr_dlss5_nr"
+			list
+			{
+				"#SETTING_OFF"		0
+				"#SETTING_ON"		1
+			}
+		}
+		BtnDLSS5Reset
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SwchDLSS5NR
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SwchDLSS5NR
+			navDown					SldNRIntensity
+		}
+		ImgSubheaderModel
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					22
+			ypos					0
+			pin_to_sibling			BtnDLSS5Reset
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+		}
+		LblSubheaderModel
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgSubheaderModel
+			pin_corner_to_sibling	LEFT
+			pin_to_sibling_corner	LEFT
+			labelText				"NEURAL MODEL"
+		}
+		SldNRIntensity
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			xpos					-22
+			pin_to_sibling			ImgSubheaderModel
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDLSS5Reset
+			navDown					SldNRLocalTone
+			conCommand				"tf2nr_nr_intensity"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRLocalTone
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRIntensity
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRIntensity
+			navDown					SldNRStructure
+			conCommand				"tf2nr_nr_local_tone"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRStructure
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRLocalTone
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLocalTone
+			navDown					SldNRSkin
+			conCommand				"tf2nr_nr_structure"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRSkin
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRStructure
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRStructure
+			navDown					SwchNRStyle
+			conCommand				"tf2nr_nr_skin"
+			minValue				0.0
+			maxValue				1.0
+			stepSize				0.05
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SwchNRStyle
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SldNRSkin
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRSkin
+			navDown					SldNRLookStrength
+			ConVar					"tf2nr_nr_style"
+			list
+			{
+				"Default"		0
+				"Natural"		1
+				"Cinematic"		2
+			}
+		}
+		ImgSubheaderLook
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					22
+			ypos					0
+			pin_to_sibling			SwchNRStyle
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+		}
+		LblSubheaderLook
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgSubheaderLook
+			pin_corner_to_sibling	LEFT
+			pin_to_sibling_corner	LEFT
+			labelText				"LOOK (RESHAPES THE RESULT)"
+		}
+		SldNRLookStrength
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			xpos					-22
+			pin_to_sibling			ImgSubheaderLook
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SwchNRStyle
+			navDown					SldNRLookColour
+			conCommand				"tf2nr_nr_look_strength"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRLookColour
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRLookStrength
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLookStrength
+			navDown					SldNRLookHue
+			conCommand				"tf2nr_nr_look_colour"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRLookHue
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRLookColour
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLookColour
+			navDown					SldNRLookDarken
+			conCommand				"tf2nr_nr_look_hue"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRLookDarken
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRLookHue
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLookHue
+			navDown					SldNRLookDetail
+			conCommand				"tf2nr_nr_look_darken"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SldNRLookDetail
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			SldNRLookDarken
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLookDarken
+			navDown					SwchNRStabilize
+			conCommand				"tf2nr_nr_look_detail"
+			minValue				0.0
+			maxValue				2.0
+			stepSize				0.1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				RuiButton
+				InheritProperties		WideButton
+				clip					0
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				style					SliderButton
+				command					""
+			}
+		}
+		SwchNRStabilize
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SldNRLookDetail
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SldNRLookDetail
+			navDown					SwchDLSS5NR
+			ConVar					"tf2nr_nr_stabilize"
+			list
+			{
+				"#SETTING_OFF"		0
+				"Static"		1
+				"Motion"		2
+			}
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			InheritProperties		FooterButtons
+		}
+	}
+}

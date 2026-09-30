@@ -1,0 +1,26 @@
+# build outputs
+*.dll
+*.addon64
+*.obj
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.exe
+fsr/lib/build/
+fsr/lib/build_testing/
+# generated shader headers of the add-ons (built by build.bat from the .hlsl)
+addons/tf2-dlss-sr/prep_cs.h
+addons/fg/blend_cs.h
+addons/fg/diff_cs.h
+addons/fg/select_cs.h
+# vendored binaries (see packaging/vendor/VENDOR.json) and package outputs
+packaging/vendor/*.dll
+packaging/dist/
+packaging/test/
+# Respawn's vanilla menu files (extract from your own game install)
+menu/vanilla/
+# misc
+__pycache__/
+*.log
+*.tmp

@@ -1,0 +1,150 @@
+resource/ui/menus/tf2nr_ai.menu
+{
+	menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		Vignette
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuVignette
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"AI ENHANCEMENTS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname				MenuItemDescriptionClass
+			xpos					975
+			ypos					168
+		}
+
+		// ---- rows: 160 + 5*40 = 360 < footer 990; SwchQualityFSR sits on SwchQualityDLSS (one visible at a time) ------
+		SwchUpscaler
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			xpos					120
+			ypos					160
+			tabPosition				1
+			navUp					SwchFSRFG
+			navDown					SwchQualityDLSS
+			// list items are added by the script (Hud_DialogList_AddListItem)
+		}
+		SwchQualityDLSS
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SwchUpscaler
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SwchUpscaler
+			navDown					SwchDLSS5NR
+			// list items are added by the script (Hud_DialogList_AddListItem)
+		}
+		SwchQualityFSR
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SwchUpscaler
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			visible					0
+			enabled					0
+			navUp					SwchUpscaler
+			navDown					SwchDLSS5NR
+			// list items are added by the script (Hud_DialogList_AddListItem)
+		}
+		SwchDLSS5NR
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SwchUpscaler
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			ypos					40
+			navUp					SwchQualityDLSS
+			navDown					BtnDLSS5Tuning
+			ConVar					"tf2nr_dlss5_nr"
+			list
+			{
+				"#SETTING_OFF"		0
+				"#SETTING_ON"		1
+			}
+		}
+		BtnDLSS5Tuning
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			SwchDLSS5NR
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					SwchDLSS5NR
+			navDown					SwchFSRFG
+		}
+		SwchFSRFG
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnDLSS5Tuning
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDLSS5Tuning
+			navDown					SwchUpscaler
+			ConVar					"tf2nr_fsr_fg"
+			list
+			{
+				"#SETTING_OFF"		0
+				"#SETTING_ON"		1
+			}
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			InheritProperties		FooterButtons
+		}
+	}
+}

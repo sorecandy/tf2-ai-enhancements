@@ -1,0 +1,121 @@
+{
+	"Name": "TF2NR.GraphicsToggles",
+	"Description": "AI Enhancements: adds one 'AI Enhancements' row to Settings > Video (the vanilla rows stay in their places). It opens a page with Upscaler (Off / NVIDIA DLSS), Quality (DLAA, Quality, Balanced, Performance, Ultra Performance), DLSS 5 Neural Rendering, DLSS 5 Adjustments (a submenu of Neural Rendering sliders) and AMD FSR 3 Frame Generation (hybrid-graphics laptops only). The values live in tf2nr_* convars that the tf2-dlss-sr, tf2-nr-bridge and tf2-fg ReShade add-ons read every frame. Settings > Mod Settings has a shortcut to the page, the DLSS 5 and Frame Generation switches and the DLSS 5 adjustments.",
+	"Version": "1.0.0",
+	"LoadPriority": 2,
+	"RequiredOnClient": false,
+	"ConVars": [
+		{
+			"Name": "tf2nr_dlss5_nr",
+			"DefaultValue": "0",
+			"HelpString": "DLSS 5 Neural Rendering (renodx-dlss5 inside the DLSS evaluate of tf2-dlss-sr): 0 off (default), 1 on. DLSS upscaler only; with renodx-dlss5 installed, on with tf2nr_dlss_sr 0 runs DLSS at DLAA.",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_dlss_sr",
+			"DefaultValue": "0",
+			"HelpString": "Upscaling quality via tf2-dlss-sr: 0 off, 1 Native AA (DLAA), 2 Quality (1.5x), 3 Balanced (1.724x), 4 Performance (2.0x), 5 Ultra Performance (3.0x). The backend is tf2nr_upscaler.",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_upscaler",
+			"DefaultValue": "1",
+			"HelpString": "Upscaler backend for tf2nr_dlss_sr: 1 = NVIDIA DLSS (default; any other value = DLSS). 2 = AMD FSR 3 is reserved: the tf2-dlss-sr in this release has no FSR 3 upscaler and always uses DLSS.",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_upscale_last",
+			"DefaultValue": "2",
+			"HelpString": "Menu state: the last non-zero tf2nr_dlss_sr, restored when the AI Enhancements Upscaler row goes from Off back to DLSS (set tf2nr_dlss_sr / tf2nr_upscaler on that page, not by hand, to keep it in step)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_fsr_fg",
+			"DefaultValue": "0",
+			"HelpString": "AMD FSR 3 frame generation via tf2-fg: 0 off, 1 on. Needs the DLSS upscaler on (tf2nr_dlss_sr 1-5), V-Sync off and [TF2FG] Enable=1. Runs only when the screen is driven by another GPU than the renderer (hybrid laptops); off on desktops, with the screen on the rendering GPU, and while Steam/Discord/RTSS/OBS overlay hooks are loaded. Pauses outside 40 to min(83, refresh/2) real fps ([TF2FG] MinBaseFps/MaxBaseFps).",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_menu_tuning",
+			"DefaultValue": "1",
+			"HelpString": "1 = the DLSS 5 Adjustments below drive renodx [RenoDX.DLSS5]; 0 = leave the ReShade.ini / overlay values alone",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_intensity",
+			"DefaultValue": "2.0",
+			"HelpString": "DLSS 5 NR strength -> NRIntensity (0..2)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_local_tone",
+			"DefaultValue": "2.0",
+			"HelpString": "DLSS 5 NR local tone -> NRLocalTone (0..2)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_structure",
+			"DefaultValue": "2.0",
+			"HelpString": "DLSS 5 NR structure -> NRLocalStructure (0..2)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_skin",
+			"DefaultValue": "1.0",
+			"HelpString": "DLSS 5 NR character/skin structure -> NRSkinStructure (-1..1; renodx v7 clamps to 1; the menu offers 0..1)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_style",
+			"DefaultValue": "1",
+			"HelpString": "DLSS 5 NR style -> NRStyle: 0 Default, 1 Natural, 2 Cinematic",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_look_strength",
+			"DefaultValue": "1.3",
+			"HelpString": "DLSS 5 Look edit strength -> NRLookStrength (0..2)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_look_colour",
+			"DefaultValue": "0.5",
+			"HelpString": "DLSS 5 Look: colour change kept, 0..2 (NRLookColour; 0 = game's colours)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_look_hue",
+			"DefaultValue": "0",
+			"HelpString": "DLSS 5 Look: model tint kept, 0..2 (NRLookHue; 0 = game's hues)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_look_darken",
+			"DefaultValue": "0.7",
+			"HelpString": "DLSS 5 Look: darkening kept, 0..2 (NRLookDarken)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_look_detail",
+			"DefaultValue": "1.2",
+			"HelpString": "DLSS 5 Look fine detail -> NRLookDetail (0..2)",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		},
+		{
+			"Name": "tf2nr_nr_stabilize",
+			"DefaultValue": "2",
+			"HelpString": "DLSS 5 Look stabilize -> NRLookStabilize: 0 Off, 1 Static, 2 Motion",
+			"Flags": "ARCHIVE_PLAYERPROFILE"
+		}
+	],
+	"Scripts": [
+		{
+			"Path": "ui/tf2nr_video_toggles.nut",
+			"RunOn": "UI",
+			"UICallback": {
+				"Before": "TF2NR_AddModSettings",
+				"After": "TF2NR_VideoMenu_Init"
+			}
+		}
+	]
+}

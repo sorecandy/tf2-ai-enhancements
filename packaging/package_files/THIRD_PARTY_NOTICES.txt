@@ -1,0 +1,119 @@
+TF2 AI Enhancements 1.0.0 - third-party notices and licensing decisions
+=========================================================================
+
+This file lists every third-party component in this package, the terms it is distributed under, and the components
+that were deliberately NOT included.
+
+Own components (by the package author, provided "as is", without warranty of any kind):
+  plugins/TF2AIEnhancements.dll         Northstar plugin that loads the bundled ReShade
+  plugins/lib/tf2-dlss-sr.addon64       upscaler add-on (NVIDIA DLSS)
+  plugins/lib/tf2-nr-bridge.addon64     motion vectors, HUD-less copy, DLSS 5 settings bridge
+  plugins/lib/tf2-fg.addon64            AMD FSR 3 frame generation add-on and presenter
+  mods/TF2NR.GraphicsToggles            Settings > Video > AI Enhancements menu
+The add-ons contain the third-party code listed in sections 1 to 4.
+
+
+1. ReShade 6.8.0.2155 (build with add-on support)
+-------------------------------------------------
+Files: plugins/lib/ReShade64.dll and plugins/lib/proxy/dxgi.dll (two copies of the same binary).
+This is the unmodified crosire ReShade 6.8.0.2155 64-bit add-on build. Its original file name is ReShade64.dll.
+The plugin loads the copy named dxgi.dll so that ReShade runs as a DXGI proxy. The copy named ReShade64.dll is a fallback.
+https://reshade.me   https://github.com/crosire/reshade
+The add-on build of ReShade is published by its author for use with games that do not use anti-cheat.
+ReShade itself contains third-party components (for example Dear ImGui (MIT) and stb (MIT / public domain)). Their
+licences are listed with the ReShade source code at https://github.com/crosire/reshade.
+The ReShade add-on API headers compiled into the add-ons are Copyright (C) 2021 Patrick Mours,
+SPDX-License-Identifier: BSD-3-Clause OR MIT. ReShade licence (crosire/reshade LICENSE.md, verbatim; also in
+licenses/ReShade_LICENSE.txt):
+
+Copyright 2014 Patrick Mours. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+2. AMD FidelityFX SDK (FSR 3 optical flow and frame interpolation)
+------------------------------------------------------------------
+Statically linked into plugins/lib/tf2-fg.addon64 (FSR 3 frame generation). This release contains no FSR 3 upscaler.
+The source is the DirectX 11 port https://github.com/optiscaler/FidelityFX-SDK-DX11 (commit 9b04fa49), with local
+patches. AMD, FidelityFX and FSR are trademarks of Advanced Micro Devices, Inc.
+MIT licence (the same text is in licenses/FidelityFX_SDK_LICENSE.txt):
+
+Copyright © 2023 Advanced Micro Devices, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+3. RSA Data Security, Inc. MD5 Message Digest Algorithm
+-------------------------------------------------------
+Compiled into plugins/lib/tf2-fg.addon64 as part of the FidelityFX SDK DirectX 11 backend (md5.c, used with
+DXBCChecksum.c for the compiled shaders). Notice, verbatim from md5.c:
+
+Copyright (C) 1990, RSA Data Security, Inc. All rights reserved.
+
+License to copy and use this software is granted provided that it is identified as the "RSA Data Security, Inc. MD5
+Message Digest Algorithm" in all material mentioning or referencing this software or this function.
+
+License is also granted to make and use derivative works provided that such works are identified as "derived from the
+RSA Data Security, Inc. MD5 Message Digest Algorithm" in all material mentioning or referencing the derived work.
+
+RSA Data Security, Inc. makes no representations concerning either the merchantability of this software or the
+suitability of this software for any particular purpose. It is provided "as is" without express or implied warranty of
+any kind.
+
+These notices must be retained in any copies of any part of this documentation and/or software.
+
+
+4. NVIDIA DLSS Super Resolution runtime and NGX SDK
+---------------------------------------------------
+Files:
+  - plugins/lib/nvngx_dlss.dll: the NVIDIA DLSS Super Resolution runtime (its version is in the file's properties). It
+    is unmodified and carries NVIDIA's Authenticode signature.
+  - The NVIDIA NGX SDK (static library and headers), compiled into plugins/lib/tf2-dlss-sr.addon64.
+Terms: the NVIDIA RTX SDKs License. The full text is in licenses/NVIDIA_RTX_SDKs_LICENSE.txt. The components are
+distributed under that licence, which also governs anyone who redistributes this package:
+  - Section 1.c permits distributing SDK software in object code form, as incorporated into a software application,
+    subject to the distribution requirements of section 2.
+  - Notice required by section 2.b of that licence:
+      “This software contains source code provided by NVIDIA Corporation.”
+  - The NVIDIA components remain subject to those terms. They may not be reverse engineered, decompiled or
+    disassembled, and they may not be distributed or sublicensed separately as a stand-alone product (section 4).
+Attribution (section 7.1(b)): this mod uses NVIDIA DLSS. NVIDIA, the NVIDIA logo, GeForce RTX and DLSS are trademarks
+and/or registered trademarks of NVIDIA Corporation in the U.S. and other countries.
+
+
+5. Components NOT included (decisions of 2026-09-29)
+----------------------------------------------------
+  - renodx-dlss5 7.0.0-rc8 (DLSS 5 Neural Rendering add-on):
+    - It is a closed-source community build, obtained from a mirror.
+    - Neither the download nor the binary contains a licence or redistribution permission, so it is not
+      redistributed.
+    - It is optional: everything else works without it. README.md explains where it goes.
+  - nvngx_dlssnr.dll (NVIDIA DLSS 5 Neural Rendering runtime 310.8):
+    - Only renodx-dlss5 uses it.
+    - It is not part of an NVIDIA SDK release obtained under a licence that permits redistribution, so it is not
+      redistributed.
+  - AMD FSR 3 upscaler: not in this release (the FidelityFX code above is frame generation only).
+  - DLSS5-Feeder: not used. The package uses the native route (DLSS 5 runs inside tf2-dlss-sr's DLSS evaluate).
+  - Northstar: required, not bundled.

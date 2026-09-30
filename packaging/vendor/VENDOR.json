@@ -1,0 +1,19 @@
+{
+  "ReShade64.dll": {
+    "sha256": "0cee63f9c9f13f3ac909c5b4903f4dbb4b719a7ab3b4f13b0deaf83c814b94f7",
+    "version": "6.8.0.2155",
+    "source": "copied 2026-09-29 from the owner's Titanfall2\\bin\\x64_retail\\dxgi.dll (same sha256 as backups\\2026-09-29-ai\\pre\\bin\\dxgi.dll); crosire ReShade 6.8.0 add-on build, OriginalFilename ReShade64.dll",
+    "authenticode": "NotSigned",
+    "licence": "BSD-3-Clause"
+  },
+  "nvngx_dlss.dll": {
+    "sha256": "3975567b8943c53acce397f2b72380092f84f162d00b0d2c7d08a1025c563983",
+    "version": "310.9.1.0",
+    "source": "downloaded 2026-09-30 (owner-approved) from the official NVIDIA/DLSS GitHub release v310.9.1 (tag v310.9.1 = commit 374959484e79a640feaba44c93ac8cfb0a03f5b5), lib/Windows_x86_64/rel/nvngx_dlss.dll: https://github.com/NVIDIA/DLSS/raw/374959484e79a640feaba44c93ac8cfb0a03f5b5/lib/Windows_x86_64/rel/nvngx_dlss.dll",
+    "size": 58956912,
+    "git_blob_sha1": "875981984f56e71b4fde6605484ef767dadf9910 (matches the GitHub contents API for that commit)",
+    "authenticode": "Valid (CN=NVIDIA Corporation, DigiCert timestamp)",
+    "licence": "NVIDIA RTX SDKs License (package_files/licenses/NVIDIA_RTX_SDKs_LICENSE.txt, identical to LICENSE.txt at that commit). Sec. 1.c: redistributed only as part of this application, never stand-alone; sec. 2.c: the licence text ships with it; sec. 3.e: it must never be placed under an open-source licence (keep it out of any public source repository).",
+    "replaced": "310.8.0.0 c85f971c (community DLSS 5 bundle copy) - staged to C:\\_TO_DELETE_2026-09-30 on 2026-09-30"
+  }
+}
