@@ -166,8 +166,14 @@ namespace tf2nr::tuning
 	inline void walk(log_fn log)
 	{
 		HMODULE m = GetModuleHandleW(L"renodx-dlss5.addon64");
-		if (m == nullptr) return;   // renodx not loaded (yet)
 		g_walked = true;
+		if (m == nullptr)
+		{
+			// renodx not loaded: the sliders still persist to [RenoDX.DLSS5], where tf2-nr-linux reads them live. Before,
+			// update() retried this walk (and logged "convars resolved") every second for the whole session.
+			if (log) log("tuning: renodx-dlss5 not loaded - adjustments persist to [RenoDX.DLSS5] only (tf2-nr-linux reads them)");
+			return;
+		}
 		span rdata, data;
 		if (!seh_sections(m, &rdata, &data)) { if (log) log("tuning: renodx sections not found - sliders apply at the next start only"); return; }
 		auto find = [&](key &k) {

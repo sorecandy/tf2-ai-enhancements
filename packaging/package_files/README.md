@@ -68,6 +68,17 @@ To install them:
 
 A mod-manager update replaces the package folder: copy the two files in again after updating.
 
+### DLSS 5 on Linux (Proton)
+
+The RenoDX DLSS 5 add-on does not run under Proton. There, use **tf2-nr-linux** instead
+([github.com/Milofax/tf2-nr-linux](https://github.com/Milofax/tf2-nr-linux), GPL, DynamicShaderFrameGen's NR runtime):
+
+1. Put `tf2-nr-linux.addon64` and the same `nvngx_dlssnr.dll` (310.8.0.0, NVIDIA-signed) into `plugins\lib\`.
+2. Leave `renodx-dlss5.addon64` out.
+3. Set Upscaler = DLSS and DLSS 5 = On, as above. The DLSS 5 Adjustments sliders apply live.
+
+`tf2-dlss-sr.log` then says `tf2-nr-linux route: active`. Its own log is `tf2-nr-linux.log`.
+
 ## You already have ReShade in the game folder?
 
 If a ReShade `dxgi.dll` (or `d3d11.dll` and similar) sits in `Titanfall2\bin\x64_retail\` or in `Titanfall2\` itself, the plugin loads **nothing**, because two ReShades cannot run in one game. `plugins\lib\tf2-ai-loader.log` then says `SKIP: ReShade is installed in the game folder` and names the file. Either:

@@ -8,7 +8,7 @@
 		{
 			"Name": "tf2nr_dlss5_nr",
 			"DefaultValue": "0",
-			"HelpString": "DLSS 5 Neural Rendering (renodx-dlss5 inside the DLSS evaluate of tf2-dlss-sr): 0 off (default), 1 on. DLSS upscaler only; with renodx-dlss5 installed, on with tf2nr_dlss_sr 0 runs DLSS at DLAA.",
+			"HelpString": "DLSS 5 Neural Rendering (renodx-dlss5 or, on Linux/Proton, tf2-nr-linux, driven by tf2-dlss-sr): 0 off (default), 1 on. DLSS upscaler only; with renodx-dlss5 installed, on with tf2nr_dlss_sr 0 runs DLSS at DLAA.",
 			"Flags": "ARCHIVE_PLAYERPROFILE"
 		},
 		{

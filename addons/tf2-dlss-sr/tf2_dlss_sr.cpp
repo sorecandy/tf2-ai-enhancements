@@ -99,6 +99,7 @@
 #include "nvsdk_ngx_helpers.h"
 #include "prep_cs.h"   // const BYTE g_prep_cs[] (fxc /Vn g_prep_cs)
 #include "../bridge/tf2nr_menu_toggles.hpp"
+#include "tf2_nr_linux_api.h"   // tf2-nr-linux: DLSS 5 NR under Linux/Proton (separate GPL add-on, github.com/Milofax/tf2-nr-linux; header MIT)
 #include "../bridge/tf2nr_nr_tuning.hpp"   // live DLSS 5 Adjustments sliders -> renodx atomics
 #include "../bridge/tf2_fg_interop.h"     // tf2sr_fg_inputs_v1 (FG export), PFN_tf2fg_in_native_present
 
@@ -187,6 +188,7 @@ namespace
 		int settle_frames = 3, recreate_cooldown = 45, mip_bias = 1, size_source = 0;
 		float mip_bias_offset = -1.0f;
 		int no_tsaa_unpin = 30, camera_readback = 1;
+		int nr_order = 0;   // tf2-nr-linux: 0 = after DLSS when render size == display size (DLAA), else before; 1 = always before
 		float cam_cut_dist = 64.0f, cam_cut_deg = 40.0f, cam_cut_fov_deg = 15.0f;
 	} g_cfg;
 
@@ -226,6 +228,7 @@ namespace
 		reshade::get_config_value(nullptr, "TF2DLSSSR", "CamCutDist", g_cfg.cam_cut_dist);
 		reshade::get_config_value(nullptr, "TF2DLSSSR", "CamCutDeg", g_cfg.cam_cut_deg);
 		reshade::get_config_value(nullptr, "TF2DLSSSR", "CamCutFovDeg", g_cfg.cam_cut_fov_deg);
+		reshade::get_config_value(nullptr, "TF2DLSSSR", "NROrder", g_cfg.nr_order);
 		const auto clampf = [](float v, float lo, float hi) { return !(v >= lo) ? lo : (v > hi ? hi : v); };
 		g_cfg.cam_cut_dist = clampf(g_cfg.cam_cut_dist, 1.0f, 1.0e6f);
 		g_cfg.cam_cut_deg = clampf(g_cfg.cam_cut_deg, 1.0f, 180.0f);
@@ -264,8 +267,32 @@ namespace
 		}
 		return true;
 	}
+	// tf2-nr-linux route: tf2-nr-linux.addon64 runs DLSS 5 NR with DynamicShaderFrameGen's runtime, which
+	// works under Proton where renodx-dlss5 does not. It is called from run_dlss (no NGX hook): after the DLSS evaluate
+	// on the DLSS output when render size == display size (DLAA - the same place as in Skyrim), otherwise before it on
+	// the render-size colour (renodx's NRPreUpscale placement). Same menu rules as the renodx native route.
+	PFN_tf2nr_linux_apply g_nrl_apply = nullptr;
+	PFN_tf2nr_linux_reset g_nrl_reset = nullptr;
+	bool g_nrl_route = false;
+	int g_nrl_logged = -1;
+	uint64_t g_nrl_ok = 0, g_nrl_fail = 0;
+	void refresh_nrl()
+	{
+		HMODULE m = GetModuleHandleW(L"tf2-nr-linux.addon64");
+		g_nrl_apply = m ? reinterpret_cast<PFN_tf2nr_linux_apply>(GetProcAddress(m, "tf2nr_linux_apply")) : nullptr;
+		g_nrl_reset = m ? reinterpret_cast<PFN_tf2nr_linux_reset>(GetProcAddress(m, "tf2nr_linux_reset")) : nullptr;
+		g_nrl_route = g_nrl_apply != nullptr;
+		const int code = (m ? 1 : 0) | (g_nrl_route ? 2 : 0);
+		if (code != g_nrl_logged)
+		{
+			g_nrl_logged = code;
+			logf("tf2-nr-linux route: %s", g_nrl_route ? "active (DLSS 5 NR from tf2-nr-linux.addon64; NR on keeps DLSS at least at Native AA)" :
+			                                             (m ? "add-on loaded but its exports are missing" : "none"));
+		}
+	}
 	void refresh_route()
 	{
+		refresh_nrl();
 		char buf[32] = {}; size_t len = sizeof(buf);
 		const bool ini_native = reshade::get_config_value(nullptr, "RenoDX.DLSS5", "DX11Source", buf, &len) && _stricmp(buf, "native") == 0;
 		bool loaded = false;
@@ -287,7 +314,7 @@ namespace
 	{
 		int m = g_cfg.force_mode >= 0 ? g_cfg.force_mode : tf2nr::g_sr_mode;
 		m = m < 0 ? 0 : (m > 5 ? 5 : m);
-		if (m == 0 && g_native_route && nr_menu_on()) m = 1;
+		if (m == 0 && (g_native_route || g_nrl_route) && nr_menu_on()) m = 1;
 		return m;
 	}
 
@@ -1569,8 +1596,25 @@ namespace
 		ep.pInExposureTexture = exposure_tex;
 		ep.InPreExposure = 1.0f; ep.InExposureScale = 1.0f;
 		bool evaluated = false;
+		// tf2-nr-linux: NR placement (see refresh_nrl). DLSS output and inputs have one size only in DLAA.
+		const bool nrl_on = g_nrl_route && nr_menu_on();
+		const bool nrl_post = nrl_on && g_cfg.nr_order == 0 && rw == ow && rh == oh;
+		const auto nrl_run = [&](ID3D11Texture2D *color, const char *where) {
+			tf2nr_linux_frame f = {};
+			f.version = TF2NR_LINUX_FRAME_VERSION;
+			f.device = g_gpu.dev; f.context = ctx;
+			f.color = color; f.depth = g_gpu.depth; f.motion = g_gpu.mv; f.exposure = g_gpu.exposure;
+			f.width = rw; f.height = rh;
+			f.mv_scale_x = 1.0f; f.mv_scale_y = 1.0f;   // prep_cs writes render pixels, current + mv = previous
+			f.reset = ep.InReset;
+			depth_guard nested;   // events our add-on's commands might raise on this thread are skipped
+			if (g_nrl_apply(&f)) ++g_nrl_ok;
+			else if (g_nrl_fail++ % 600 == 0) logf("tf2-nr-linux: NR not applied %s DLSS (%llu times; see tf2-nr-linux.log)", where, static_cast<unsigned long long>(g_nrl_fail));
+		};
+		if (nrl_on && !nrl_post) nrl_run(g_gpu.color, "before");
 		const NVSDK_NGX_Result r = NGX_D3D11_EVALUATE_DLSS_EXT(ctx, g_ngx.feature, g_ngx.params, &ep);
 		g_st.last_ngx_result = static_cast<int>(r);
+		if (NVSDK_NGX_SUCCEED(r) && nrl_post) nrl_run(g_gpu.out, "after");
 		if (NVSDK_NGX_SUCCEED(r))
 		{
 			g_ngx.need_reset = false;
@@ -2061,6 +2105,7 @@ namespace
 			if (gd == nullptr && g_gpu.dev != nullptr && reinterpret_cast<ID3D11Device *>(dev->get_native()) != g_gpu.dev) return;
 		}
 		SR_LOCK_ALWAYS();
+		if (g_nrl_reset) g_nrl_reset();   // tf2-nr-linux holds views on our textures and a D3D12 session on this adapter
 		if (eng::applied) { for (eng::cv *c : eng::all) eng::restore(*c); eng::applied = false; eng::applied_method = -1; logf("engine: device destroyed -> Adaptive Resolution values restored"); }
 		if (g_ngx.feature) { NVSDK_NGX_D3D11_ReleaseFeature(g_ngx.feature); g_ngx.feature = nullptr; }
 		if (g_ngx.params) { NVSDK_NGX_D3D11_DestroyParameters(g_ngx.params); g_ngx.params = nullptr; }
@@ -2151,7 +2196,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID)
 		GetModuleFileNameW(module, path, MAX_PATH);
 		g_dir = std::filesystem::path(path).parent_path();
 		g_log = _wfsopen((g_dir / "tf2-dlss-sr.log").c_str(), L"w", _SH_DENYNO);
-		logf("tf2-dlss-sr 0.3.2 loaded (0.3.1 + renodx route needs renodx loaded + NGX search add-on folder then game folder; TSAA-clamp render size, no-TSAA guard, FG export tf2sr_get_fg_inputs v%u + camera-cut hint, tf2-fg native-present skip, game-device filter)", TF2SR_FG_INPUTS_VERSION);
+		logf("tf2-dlss-sr 0.3.2 loaded (+ tf2-nr-linux route; 0.3.1 + renodx route needs renodx loaded + NGX search add-on folder then game folder; TSAA-clamp render size, no-TSAA guard, FG export tf2sr_get_fg_inputs v%u + camera-cut hint, tf2-fg native-present skip, game-device filter)", TF2SR_FG_INPUTS_VERSION);
 		load_config();
 		logf("backend: this build has no FSR 3 upscaler (the 0.4.x FSR 3 backend is held back) - tf2nr_upscaler is not read, DLSS is always used");
 		refresh_route();   // logs the route (and again whenever it changes)
